@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from "react";
+import { css, cx } from "emotion";
 
 import { getIssue, getComments, Issue, Comment } from "../../api/githubAPI";
-import { UserWithAvatar } from "../../components/UserWithAvatar";
+import { IssueMeta } from "./IssueMeta";
 import { IssueLabels } from "../../components/IssueLabels";
-
-interface IssueProps {
-    issue: Issue;
-}
 
 interface IDProps {
     org: string;
@@ -14,12 +11,6 @@ interface IDProps {
     issueId: number;
     showIssuesList: () => void;
 }
-
-const IssueState = ({ issue: { state } }: IssueProps) => (
-    <span className={`issue-detail__state issue-detail__state--${state}`}>{state}</span>
-);
-
-const IssueNumber = ({ issue }: IssueProps) => <span className="issue-detail__number">#{issue.number}</span>;
 
 export const IssueDetailsPage = ({ org, repo, issueId, showIssuesList }: IDProps) => {
     const [issue, setIssue] = useState<Issue | null>(null);
@@ -62,11 +53,7 @@ export const IssueDetailsPage = ({ org, repo, issueId, showIssuesList }: IDProps
                 <button className="pure-button" onClick={showIssuesList}>
                     Back to Issues List
                 </button>
-                <div className="issue-detail__meta" style={{ marginTop: 10 }}>
-                    <IssueNumber issue={issue} />
-                    <IssueState issue={issue} />
-                    <UserWithAvatar user={issue.user} orientation="horizontal" />
-                </div>
+                <IssueMeta issue={issue} />
                 <IssueLabels labels={issue.labels} />
                 <hr className="divider--short" />
                 <div className="issue-detail__summary">
