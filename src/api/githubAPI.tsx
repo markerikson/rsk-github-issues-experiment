@@ -36,6 +36,12 @@ export interface Comment {
     updated_at: string;
 }
 
+export interface IssuesResult {
+    pageLinks: Links | null;
+    pageCount: number;
+    issues: Issue[];
+}
+
 const isLastPage = (pageLinks: Links) => {
     return Object.keys(pageLinks).length === 2 && pageLinks.first && pageLinks.prev;
 };
@@ -53,7 +59,7 @@ const getPageCount = (pageLinks: Links) => {
     }
 };
 
-export async function getIssues(org: string, repo: string, page = 1) {
+export async function getIssues(org: string, repo: string, page = 1): Promise<IssuesResult> {
     const url = `https://api.github.com/repos/${org}/${repo}/issues?per_page=25&page=${page}`;
 
     try {
@@ -68,7 +74,7 @@ export async function getIssues(org: string, repo: string, page = 1) {
         return {
             pageLinks,
             pageCount,
-            data: issuesResponse.data
+            issues: issuesResponse.data
         };
     } catch (err) {
         throw err;

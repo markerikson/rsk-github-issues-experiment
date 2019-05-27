@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { css } from "emotion";
 
-import { getIssues, getRepoDetails, Issue } from "../../api/githubAPI";
+import { getIssues, getRepoDetails, Issue, IssuesResult } from "../../api/githubAPI";
 import { IssueListItem } from "./IssueListItem";
 import { IssuesPageHeader } from "./IssuesPageHeader";
 
@@ -17,15 +17,17 @@ const issuesListStyle = css`
     }
 `;
 
+type IssueResponse = typeof getIssues;
+
 export const IssuesListPage = () => {
-    const [issues, setIssues] = useState<Issue[]>([]);
+    const [issuesResult, setIssues] = useState<IssuesResult>({ pageLinks: null, pageCount: 1, issues: [] });
     const [numIssues, setNumIssues] = useState<number>(-1);
 
     useEffect(() => {
         async function fetchIssues() {
-            const result = await getIssues(ORG, REPO);
+            const issuesResult = await getIssues(ORG, REPO);
 
-            setIssues(result.data);
+            setIssues(issuesResult);
         }
 
         async function fetchIssueCount() {
@@ -38,7 +40,7 @@ export const IssuesListPage = () => {
         fetchIssueCount();
     }, []);
 
-    const renderedIssues = issues.map(issue => (
+    const renderedIssues = issuesResult.issues.map(issue => (
         <li>
             <IssueListItem {...issue} />
         </li>
