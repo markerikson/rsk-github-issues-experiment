@@ -12,9 +12,13 @@ type HeaderProps = {
 function OrgRepo({ org, repo }: OrgProps) {
     return (
         <span>
-            <span className="header__org">{org}</span>
+            <a href={`https://github.com/${org}`} className="header__org">
+                {org}
+            </a>
             {" / "}
-            <span className="header__repo">{repo}</span>
+            <a href={`https://github.com/${org}/${repo}`} className="header__repo">
+                {repo}
+            </a>
         </span>
     );
 }

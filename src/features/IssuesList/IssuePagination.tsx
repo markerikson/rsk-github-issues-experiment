@@ -1,11 +1,13 @@
 import React from "react";
-import Paginate from "react-paginate";
+import Paginate, { ReactPaginateProps } from "react-paginate";
 import { css, cx } from "emotion";
+
+export type OnPageChangeCallback = ReactPaginateProps["onPageChange"];
 
 interface Props {
     currentPage: number;
     pageCount: number;
-    onPageChange?: any;
+    onPageChange?: OnPageChangeCallback;
 }
 
 const paginationStyles = css`

@@ -15,7 +15,7 @@ const issuesListStyle = css`
 
 export const IssuesList = (props: { issues: Issue[] }) => {
     const renderedIssues = props.issues.map(issue => (
-        <li>
+        <li key={issue.id}>
             <IssueListItem {...issue} />
         </li>
     ));

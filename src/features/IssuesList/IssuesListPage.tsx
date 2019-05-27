@@ -3,14 +3,16 @@ import React, { useState, useEffect } from "react";
 import { getIssues, getRepoDetails, IssuesResult } from "../../api/githubAPI";
 import { IssuesPageHeader } from "./IssuesPageHeader";
 import { IssuesList } from "./IssuesList";
-import { IssuePagination } from "./IssuePagination";
+import { IssuePagination, OnPageChangeCallback } from "./IssuePagination";
 
 interface Props {
     org: string;
     repo: string;
+    page: number;
+    setJumpToPage: (page: number) => void;
 }
 
-export const IssuesListPage = ({ org, repo }: Props) => {
+export const IssuesListPage = ({ org, repo, page = 1, setJumpToPage }: Props) => {
     const [issuesResult, setIssues] = useState<IssuesResult>({ pageLinks: null, pageCount: 1, issues: [] });
     const [numIssues, setNumIssues] = useState<number>(-1);
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -20,7 +22,7 @@ export const IssuesListPage = ({ org, repo }: Props) => {
     useEffect(() => {
         async function fetchEverything() {
             async function fetchIssues() {
-                const issuesResult = await getIssues(org, repo);
+                const issuesResult = await getIssues(org, repo, page);
                 setIssues(issuesResult);
             }
 
@@ -37,17 +39,22 @@ export const IssuesListPage = ({ org, repo }: Props) => {
         setIsLoading(true);
 
         fetchEverything();
-    }, [org, repo]);
+    }, [org, repo, page]);
 
     const currentPage = Math.min(pageCount, Math.max(1, 1)) - 1;
 
     let renderedList = isLoading ? <h3>Loading...</h3> : <IssuesList issues={issues} />;
 
+    const onPageChanged: OnPageChangeCallback = selectedItem => {
+        const newPage = selectedItem.selected + 1;
+        setJumpToPage(newPage);
+    };
+
     return (
         <div id="issue-list-page">
             <IssuesPageHeader openIssuesCount={numIssues} org={org} repo={org} />
             {renderedList}
-            <IssuePagination currentPage={currentPage} pageCount={pageCount} />
+            <IssuePagination currentPage={currentPage} pageCount={pageCount} onPageChange={onPageChanged} />
         </div>
     );
 };

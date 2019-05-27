@@ -49,10 +49,21 @@ export const UserWithAvatar = ({ user, orientation = "vertical", link = true }: 
         [verticalStyles]: orientation === "vertical",
         [horizontalStyles]: orientation === "horizontal"
     });
-    return (
-        <span className={classNames}>
+
+    const contents = (
+        <React.Fragment>
             <img className="issue__user__avatar" src={user.avatar_url} alt="" />
             <div className="issue__user__name">{user.login}</div>
-        </span>
+        </React.Fragment>
     );
+
+    if (link) {
+        return (
+            <a href={`https://github.com/${user.login}`} className={classNames}>
+                {contents}
+            </a>
+        );
+    } else {
+        return <span className={classNames}>{contents}</span>;
+    }
 };
