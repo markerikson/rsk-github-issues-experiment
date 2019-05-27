@@ -1,8 +1,7 @@
 import React from "react";
-import logo from "./logo.svg";
 import "./App.css";
 
-import { IssuesListPage } from "./IssuesListPage";
+import { IssuesListPage } from "./features/IssuesList/IssuesListPage";
 
 const App: React.FC = () => {
     return (

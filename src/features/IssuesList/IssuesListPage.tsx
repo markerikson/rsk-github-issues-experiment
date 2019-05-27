@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { css } from "emotion";
 
-import { IssueLabels, Label } from "./IssueLabels";
-import { UserWithAvatar, User } from "./UserWithAvatar";
+import { IssueLabels, Label } from "../../components/IssueLabels";
+import { UserWithAvatar, User } from "../../components/UserWithAvatar";
 
 const RAILS_API_URL = "https://api.github.com/repos/rails/rails/issues?per_page=25&page=1";
 
