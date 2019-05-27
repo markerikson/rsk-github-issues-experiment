@@ -1,6 +1,8 @@
 import React from "react";
 import { css, cx } from "emotion";
+import ReactMarkdown from "react-markdown";
 
+import { insertMentionLinks } from "../../utils/stringUtils";
 import { Issue, Comment } from "../../api/githubAPI";
 import { UserWithAvatar } from "../../components/UserWithAvatar";
 
@@ -42,8 +44,7 @@ function IssueComment({ comment }: ICProps) {
             <UserWithAvatar user={comment.user} orientation="horizontal" />
 
             <div className="issue-detail__comment__body">
-                {comment.body.slice(0, 250)}
-                {/*<ReactMarkdown className="markdown" source={insertMentionLinks(comment.body)}/>*/}
+                <ReactMarkdown className="markdown" source={insertMentionLinks(comment.body)} />
             </div>
         </div>
     );

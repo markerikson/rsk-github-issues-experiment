@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { css, cx } from "emotion";
+import ReactMarkdown from "react-markdown";
 
+import { insertMentionLinks } from "../../utils/stringUtils";
 import { getIssue, getComments, Issue, Comment } from "../../api/githubAPI";
 import { IssueMeta } from "./IssueMeta";
 import { IssueLabels } from "../../components/IssueLabels";
@@ -16,6 +18,22 @@ interface IDProps {
 const detailsStyles = css`
     .issue__labels {
         margin-bottom: 2rem;
+    }
+
+    .markdown img {
+        max-width: 100%;
+    }
+    .markdown pre {
+        border: 1px solid #ccc;
+        padding: 0.5rem;
+        border-radius: 2px;
+        background-color: #f9f9f9;
+        overflow-x: auto;
+    }
+    .markdown p > code {
+        padding: 3px 5px;
+        border-radius: 2px;
+        background-color: #f7f7f7;
     }
 `;
 
@@ -78,8 +96,7 @@ export const IssueDetailsPage = ({ org, repo, issueId, showIssuesList }: IDProps
                 <IssueLabels labels={issue.labels} />
                 <hr className={dividerStyle} />
                 <div className={summaryStyles}>
-                    {issue.body.slice(0, 500)}
-                    {/*<ReactMarkdown className="markdown" source={insertMentionLinks(issue.body)}/>*/}
+                    <ReactMarkdown className="markdown" source={insertMentionLinks(issue.body)} />
                 </div>
                 <hr className={dividerStyle} />
                 <ul>{renderedComments}</ul>
