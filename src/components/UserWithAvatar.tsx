@@ -1,10 +1,7 @@
 import React from "react";
 import { css } from "emotion";
 
-export interface User {
-    login: string;
-    avatar_url: string;
-}
+import { User } from "../api/githubAPI";
 
 interface UserAvatarProps {
     user: User;
