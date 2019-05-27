@@ -1,27 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { css } from "emotion";
 
-import { getIssues, getRepoDetails, Issue, IssuesResult } from "../../api/githubAPI";
-import { IssueListItem } from "./IssueListItem";
+import { getIssues, getRepoDetails, IssuesResult } from "../../api/githubAPI";
 import { IssuesPageHeader } from "./IssuesPageHeader";
+import { IssuesList } from "./IssuesList";
+import { IssuePagination } from "./IssuePagination";
 
 const ORG = "rails";
 const REPO = "rails";
-
-const issuesListStyle = css`
-    padding: 0;
-    margin: 0;
-
-    > li {
-        list-style: none;
-    }
-`;
 
 type IssueResponse = typeof getIssues;
 
 export const IssuesListPage = () => {
     const [issuesResult, setIssues] = useState<IssuesResult>({ pageLinks: null, pageCount: 1, issues: [] });
     const [numIssues, setNumIssues] = useState<number>(-1);
+
+    const { issues, pageCount } = issuesResult;
 
     useEffect(() => {
         async function fetchIssues() {
@@ -40,16 +33,13 @@ export const IssuesListPage = () => {
         fetchIssueCount();
     }, []);
 
-    const renderedIssues = issuesResult.issues.map(issue => (
-        <li>
-            <IssueListItem {...issue} />
-        </li>
-    ));
+    const currentPage = Math.min(pageCount, Math.max(1, 1)) - 1;
 
     return (
-        <div>
+        <div id="issue-list-page">
             <IssuesPageHeader openIssuesCount={numIssues} org={ORG} repo={REPO} />
-            <ul className={issuesListStyle}>{renderedIssues}</ul>
+            <IssuesList issues={issues} />
+            <IssuePagination currentPage={currentPage} pageCount={pageCount} />
         </div>
     );
 };
