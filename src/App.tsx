@@ -44,13 +44,16 @@ const App: React.FC = () => {
 
     if (currentDisplay.type === "issues") {
         content = (
-            <IssuesListPage
-                org={org}
-                repo={repo}
-                page={page}
-                setJumpToPage={setJumpToPage}
-                showIssueComments={showIssueComments}
-            />
+            <React.Fragment>
+                <RepoSearchForm org={org} repo={repo} setOrgAndRepo={setOrgAndRepo} setJumpToPage={setJumpToPage} />
+                <IssuesListPage
+                    org={org}
+                    repo={repo}
+                    page={page}
+                    setJumpToPage={setJumpToPage}
+                    showIssueComments={showIssueComments}
+                />
+            </React.Fragment>
         );
     } else {
         const { issueId } = currentDisplay;
@@ -60,12 +63,7 @@ const App: React.FC = () => {
         );
     }
 
-    return (
-        <div className="App">
-            <RepoSearchForm org={org} repo={repo} setOrgAndRepo={setOrgAndRepo} setJumpToPage={setJumpToPage} />
-            {content}
-        </div>
-    );
+    return <div className="App">{content}</div>;
 };
 
 export default App;

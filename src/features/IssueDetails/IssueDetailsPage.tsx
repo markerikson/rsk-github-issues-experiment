@@ -4,6 +4,7 @@ import { css, cx } from "emotion";
 import { getIssue, getComments, Issue, Comment } from "../../api/githubAPI";
 import { IssueMeta } from "./IssueMeta";
 import { IssueLabels } from "../../components/IssueLabels";
+import { IssueComments } from "./IssueComments";
 
 interface IDProps {
     org: string;
@@ -11,6 +12,26 @@ interface IDProps {
     issueId: number;
     showIssuesList: () => void;
 }
+
+const detailsStyles = css`
+    .issue__labels {
+        margin-bottom: 2rem;
+    }
+`;
+
+const summaryStyles = css`
+    margin-bottom: 2rem;
+    padding: 0 1rem;
+    font-size: 1rem;
+    line-height: 1.4rem;
+`;
+
+const dividerStyle = css`
+    max-width: 80%;
+    border: none;
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 2rem;
+`;
 
 export const IssueDetailsPage = ({ org, repo, issueId, showIssuesList }: IDProps) => {
     const [issue, setIssue] = useState<Issue | null>(null);
@@ -45,21 +66,22 @@ export const IssueDetailsPage = ({ org, repo, issueId, showIssuesList }: IDProps
             </div>
         );
     } else {
-        let renderedComments = comments.map(comment => <li key={comment.id}>{comment.id}</li>);
+        let renderedComments = <IssueComments issue={issue} comments={comments} />;
 
         content = (
-            <div className="issue-detail">
+            <div className={cx("issue-detail", detailsStyles)}>
                 <h1 className="issue-detail__title">{issue.title}</h1>
                 <button className="pure-button" onClick={showIssuesList}>
                     Back to Issues List
                 </button>
                 <IssueMeta issue={issue} />
                 <IssueLabels labels={issue.labels} />
-                <hr className="divider--short" />
-                <div className="issue-detail__summary">
+                <hr className={dividerStyle} />
+                <div className={summaryStyles}>
+                    {issue.body.slice(0, 500)}
                     {/*<ReactMarkdown className="markdown" source={insertMentionLinks(issue.body)}/>*/}
                 </div>
-                <hr className="divider--short" />
+                <hr className={dividerStyle} />
                 <ul>{renderedComments}</ul>
             </div>
         );

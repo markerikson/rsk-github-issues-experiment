@@ -21,6 +21,7 @@ export interface Issue {
     labels: Label[];
     comments_url: string;
     state: "open" | "closed";
+    comments: number;
 }
 
 export interface RepoDetails {
