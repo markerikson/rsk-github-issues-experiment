@@ -6,6 +6,8 @@ import { Issue } from "../../api/githubAPI";
 import { IssueLabels } from "../../components/IssueLabels";
 import { UserWithAvatar } from "../../components/UserWithAvatar";
 
+import { shorten } from "../../utils/stringUtils";
+
 const issueStyle = css`
     border-bottom: 1px solid #ddd;
     display: flex;
@@ -32,14 +34,14 @@ const issueStyle = css`
     }
 `;
 
-export const IssueListItem = ({ number, title, labels, user, body }: Issue) => {
+export const IssueListItem = ({ number, title, labels, user, body = "" }: Issue) => {
     return (
         <div className={issueStyle}>
+            <UserWithAvatar user={user} />
             <div className="issue__body">
-                <UserWithAvatar user={user} />
                 <span className="issue__number">#{number}</span>
                 <span className="issue__title">{title}</span>
-                <p className="issue__summary">{body.slice(0, 50)}</p>
+                <p className="issue__summary">{shorten(body)}</p>
                 <IssueLabels labels={labels} />
             </div>
         </div>

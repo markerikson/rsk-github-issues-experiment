@@ -1,5 +1,5 @@
 import React from "react";
-import { css } from "emotion";
+import { css, cx } from "emotion";
 
 import { User } from "../api/githubAPI";
 
@@ -12,13 +12,6 @@ interface UserAvatarProps {
 const userStyles = css`
     display: inline-flex;
     align-items: center;
-
-    text-align: center;
-    margin-right: 0.5rem;
-    flex-direction: column;
-    justify-content: flex-start;
-    min-width: 80px;
-    max-width: 80px;
 
     .issue__user__avatar {
         width: 40px;
@@ -35,9 +28,29 @@ const userStyles = css`
     }
 `;
 
+const verticalStyles = css`
+    text-align: center;
+    margin-right: 0.5rem;
+    flex-direction: column;
+    justify-content: flex-start;
+    min-width: 80px;
+    max-width: 80px;
+`;
+
+const horizontalStyles = css`
+    .issue__user__name {
+        display: inline;
+        margin-left: 0.5rem;
+    }
+`;
+
 export const UserWithAvatar = ({ user, orientation = "vertical", link = true }: UserAvatarProps) => {
+    const classNames = cx(userStyles, {
+        [verticalStyles]: orientation === "vertical",
+        [horizontalStyles]: orientation === "horizontal"
+    });
     return (
-        <span className={userStyles}>
+        <span className={classNames}>
             <img className="issue__user__avatar" src={user.avatar_url} alt="" />
             <div className="issue__user__name">{user.login}</div>
         </span>
