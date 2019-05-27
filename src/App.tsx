@@ -31,10 +31,24 @@ const App: React.FC = () => {
         setPage(page);
     };
 
+    const showIssuesList = () => {
+        setCurrentDisplay({ type: "issues" });
+    };
+
+    const showIssueComments = (issueId: number) => {
+        setCurrentDisplay({ type: "comments", issueId });
+    };
+
     return (
         <div className="App">
             <RepoSearchForm org={org} repo={repo} setOrgAndRepo={setOrgAndRepo} setJumpToPage={setJumpToPage} />
-            <IssuesListPage org={org} repo={repo} page={page} setJumpToPage={setJumpToPage} />
+            <IssuesListPage
+                org={org}
+                repo={repo}
+                page={page}
+                setJumpToPage={setJumpToPage}
+                showIssueComments={showIssueComments}
+            />
         </div>
     );
 };

@@ -13,10 +13,15 @@ const issuesListStyle = css`
     }
 `;
 
-export const IssuesList = (props: { issues: Issue[] }) => {
-    const renderedIssues = props.issues.map(issue => (
+interface Props {
+    issues: Issue[];
+    showIssueComments: (issueId: number) => void;
+}
+
+export const IssuesList = ({ issues, showIssueComments }: Props) => {
+    const renderedIssues = issues.map(issue => (
         <li key={issue.id}>
-            <IssueListItem {...issue} />
+            <IssueListItem {...issue} showIssueComments={showIssueComments} />
         </li>
     ));
 

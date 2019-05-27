@@ -5,14 +5,15 @@ import { IssuesPageHeader } from "./IssuesPageHeader";
 import { IssuesList } from "./IssuesList";
 import { IssuePagination, OnPageChangeCallback } from "./IssuePagination";
 
-interface Props {
+interface ILProps {
     org: string;
     repo: string;
     page: number;
     setJumpToPage: (page: number) => void;
+    showIssueComments: (issueId: number) => void;
 }
 
-export const IssuesListPage = ({ org, repo, page = 1, setJumpToPage }: Props) => {
+export const IssuesListPage = ({ org, repo, page = 1, setJumpToPage, showIssueComments }: ILProps) => {
     const [issuesResult, setIssues] = useState<IssuesResult>({ pageLinks: null, pageCount: 1, issues: [] });
     const [numIssues, setNumIssues] = useState<number>(-1);
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -43,7 +44,11 @@ export const IssuesListPage = ({ org, repo, page = 1, setJumpToPage }: Props) =>
 
     const currentPage = Math.min(pageCount, Math.max(1, 1)) - 1;
 
-    let renderedList = isLoading ? <h3>Loading...</h3> : <IssuesList issues={issues} />;
+    let renderedList = isLoading ? (
+        <h3>Loading...</h3>
+    ) : (
+        <IssuesList issues={issues} showIssueComments={showIssueComments} />
+    );
 
     const onPageChanged: OnPageChangeCallback = selectedItem => {
         const newPage = selectedItem.selected + 1;

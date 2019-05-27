@@ -34,13 +34,19 @@ const issueStyle = css`
     }
 `;
 
-export const IssueListItem = ({ number, title, labels, user, body = "" }: Issue) => {
+type Props = Issue & {
+    showIssueComments: (issueId: number) => void;
+};
+
+export const IssueListItem = ({ number, title, labels, user, body = "", showIssueComments }: Props) => {
     return (
         <div className={issueStyle}>
             <UserWithAvatar user={user} />
             <div className="issue__body">
-                <span className="issue__number">#{number}</span>
-                <span className="issue__title">{title}</span>
+                <a href="#comments" onClick={() => showIssueComments(number)}>
+                    <span className="issue__number">#{number}</span>
+                    <span className="issue__title">{title}</span>
+                </a>
                 <p className="issue__summary">{shorten(body)}</p>
                 <IssueLabels labels={labels} />
             </div>
