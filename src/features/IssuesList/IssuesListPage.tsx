@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { css } from "emotion";
 
-import { getIssues, Issue } from "../../api/githubAPI";
+import { getIssues, getRepoDetails, Issue } from "../../api/githubAPI";
 import { IssueListItem } from "./IssueListItem";
+import { IssuesPageHeader } from "./IssuesPageHeader";
 
 const ORG = "rails";
 const REPO = "rails";
@@ -18,6 +19,7 @@ const issuesListStyle = css`
 
 export const IssuesListPage = () => {
     const [issues, setIssues] = useState<Issue[]>([]);
+    const [numIssues, setNumIssues] = useState<number>(-1);
 
     useEffect(() => {
         async function fetchIssues() {
@@ -26,7 +28,14 @@ export const IssuesListPage = () => {
             setIssues(result.data);
         }
 
+        async function fetchIssueCount() {
+            const repoDetails = await getRepoDetails(ORG, REPO);
+
+            setNumIssues(repoDetails.open_issues_count);
+        }
+
         fetchIssues();
+        fetchIssueCount();
     }, []);
 
     const renderedIssues = issues.map(issue => (
@@ -37,7 +46,7 @@ export const IssuesListPage = () => {
 
     return (
         <div>
-            <h2>Issues</h2>
+            <IssuesPageHeader openIssuesCount={numIssues} org={ORG} repo={REPO} />
             <ul className={issuesListStyle}>{renderedIssues}</ul>
         </div>
     );
