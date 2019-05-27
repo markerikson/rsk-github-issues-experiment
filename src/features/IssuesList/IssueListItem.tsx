@@ -1,4 +1,4 @@
-import React from "react";
+import React, { MouseEvent } from "react";
 import { css } from "emotion";
 
 import { Issue } from "../../api/githubAPI";
@@ -39,11 +39,16 @@ type Props = Issue & {
 };
 
 export const IssueListItem = ({ number, title, labels, user, body = "", showIssueComments }: Props) => {
+    const onIssueClicked = (e: MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        showIssueComments(number);
+    };
     return (
         <div className={issueStyle}>
             <UserWithAvatar user={user} />
             <div className="issue__body">
-                <a href="#comments" onClick={() => showIssueComments(number)}>
+                <a href="#comments" onClick={onIssueClicked}>
                     <span className="issue__number">#{number}</span>
                     <span className="issue__title">{title}</span>
                 </a>

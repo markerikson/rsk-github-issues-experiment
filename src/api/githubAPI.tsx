@@ -19,6 +19,8 @@ export interface Issue {
     user: User;
     body: string;
     labels: Label[];
+    comments_url: string;
+    state: "open" | "closed";
 }
 
 export interface RepoDetails {
