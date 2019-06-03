@@ -38,12 +38,15 @@ type Props = Issue & {
     showIssueComments: (issueId: number) => void;
 };
 
-export const IssueListItem = ({ number, title, labels, user, body = "", showIssueComments }: Props) => {
+export const IssueListItem = ({ number, title, labels, user, comments, body = "", showIssueComments }: Props) => {
     const onIssueClicked = (e: MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
         showIssueComments(number);
     };
+
+    const pluralizedComments = comments === 1 ? "comment" : "comments";
+
     return (
         <div className={issueStyle}>
             <UserWithAvatar user={user} />
@@ -52,7 +55,7 @@ export const IssueListItem = ({ number, title, labels, user, body = "", showIssu
                     <span className="issue__number">#{number}</span>
                     <span className="issue__title">{title}</span>
                 </a>
-                <p className="issue__summary">{shorten(body)}</p>
+                <br /> ({comments} {pluralizedComments})<p className="issue__summary">{shorten(body)}</p>
                 <IssueLabels labels={labels} />
             </div>
         </div>
