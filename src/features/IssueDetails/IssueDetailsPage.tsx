@@ -54,11 +54,18 @@ const dividerStyle = css`
 export const IssueDetailsPage = ({ org, repo, issueId, showIssuesList }: IDProps) => {
     const [issue, setIssue] = useState<Issue | null>(null);
     const [comments, setComments] = useState<Comment[]>([]);
+    const [commentsError, setCommentsError] = useState<Error | null>(null);
 
     useEffect(() => {
         async function fetchIssue() {
-            const issue = await getIssue(org, repo, issueId);
-            setIssue(issue);
+            try {
+                setCommentsError(null);
+                //throw new Error("Panic!!!");
+                const issue = await getIssue(org, repo, issueId);
+                setIssue(issue);
+            } catch (err) {
+                setCommentsError(err);
+            }
         }
 
         fetchIssue();
@@ -77,9 +84,26 @@ export const IssueDetailsPage = ({ org, repo, issueId, showIssuesList }: IDProps
 
     let content;
 
+    const backToIssueListButton = (
+        <button className="pure-button" onClick={showIssuesList}>
+            Back to Issues List
+        </button>
+    );
+
+    if (commentsError) {
+        return (
+            <div className="issue-detail--error">
+                {backToIssueListButton}
+                <h1>There was a problem loading issue #{issueId}</h1>
+                <p>{commentsError.toString()}</p>
+            </div>
+        );
+    }
+
     if (issue === null) {
         content = (
             <div className="issue-detail--loading">
+                {backToIssueListButton}
                 <p>Loading issue #{issueId}...</p>
             </div>
         );
@@ -89,9 +113,7 @@ export const IssueDetailsPage = ({ org, repo, issueId, showIssuesList }: IDProps
         content = (
             <div className={cx("issue-detail", detailsStyles)}>
                 <h1 className="issue-detail__title">{issue.title}</h1>
-                <button className="pure-button" onClick={showIssuesList}>
-                    Back to Issues List
-                </button>
+                {backToIssueListButton}
                 <IssueMeta issue={issue} />
                 <IssueLabels labels={issue.labels} />
                 <hr className={dividerStyle} />

@@ -17,6 +17,7 @@ export const IssuesListPage = ({ org, repo, page = 1, setJumpToPage, showIssueCo
     const [issuesResult, setIssues] = useState<IssuesResult>({ pageLinks: null, pageCount: 1, issues: [] });
     const [numIssues, setNumIssues] = useState<number>(-1);
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [issuesError, setIssuesError] = useState<Error | null>(null);
 
     const { issues, pageCount } = issuesResult;
 
@@ -32,15 +33,30 @@ export const IssuesListPage = ({ org, repo, page = 1, setJumpToPage, showIssueCo
                 setNumIssues(repoDetails.open_issues_count);
             }
 
-            await Promise.all([fetchIssues(), fetchIssueCount()]);
-
-            setIsLoading(false);
+            try {
+                await Promise.all([fetchIssues(), fetchIssueCount()]);
+                setIssuesError(null);
+            } catch (err) {
+                console.error(err);
+                setIssuesError(err);
+            } finally {
+                setIsLoading(false);
+            }
         }
 
         setIsLoading(true);
 
         fetchEverything();
     }, [org, repo, page]);
+
+    if (issuesError) {
+        return (
+            <div>
+                <h1>Something went wrong...</h1>
+                <div>{issuesError.toString()}</div>
+            </div>
+        );
+    }
 
     const currentPage = Math.min(pageCount, Math.max(1, 1)) - 1;
 
