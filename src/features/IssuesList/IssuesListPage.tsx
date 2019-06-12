@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 
-import { getIssues, getRepoDetails, IssuesResult } from "../../api/githubAPI";
+import { getIssues, IssuesResult } from "api/githubAPI";
 import { IssuesPageHeader } from "./IssuesPageHeader";
 import { IssuesList } from "./IssuesList";
 import { IssuePagination, OnPageChangeCallback } from "./IssuePagination";
+
+import { fetchIssuesCount } from "features/RepoSearch/repoDetails";
+import { RootState } from "store";
 
 interface ILProps {
     org: string;
@@ -14,10 +18,13 @@ interface ILProps {
 }
 
 export const IssuesListPage = ({ org, repo, page = 1, setJumpToPage, showIssueComments }: ILProps) => {
+    const dispatch = useDispatch();
+
     const [issuesResult, setIssues] = useState<IssuesResult>({ pageLinks: null, pageCount: 1, issues: [] });
-    const [numIssues, setNumIssues] = useState<number>(-1);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [issuesError, setIssuesError] = useState<Error | null>(null);
+
+    const openIssueCount = useSelector((state: RootState) => state.repoDetails.openIssuesCount);
 
     const { issues, pageCount } = issuesResult;
 
@@ -28,13 +35,8 @@ export const IssuesListPage = ({ org, repo, page = 1, setJumpToPage, showIssueCo
                 setIssues(issuesResult);
             }
 
-            async function fetchIssueCount() {
-                const repoDetails = await getRepoDetails(org, repo);
-                setNumIssues(repoDetails.open_issues_count);
-            }
-
             try {
-                await Promise.all([fetchIssues(), fetchIssueCount()]);
+                await Promise.all([fetchIssues(), dispatch(fetchIssuesCount(org, repo))]);
                 setIssuesError(null);
             } catch (err) {
                 console.error(err);
@@ -73,7 +75,7 @@ export const IssuesListPage = ({ org, repo, page = 1, setJumpToPage, showIssueCo
 
     return (
         <div id="issue-list-page">
-            <IssuesPageHeader openIssuesCount={numIssues} org={org} repo={org} />
+            <IssuesPageHeader openIssuesCount={openIssueCount} org={org} repo={org} />
             {renderedList}
             <IssuePagination currentPage={currentPage} pageCount={pageCount} onPageChange={onPageChanged} />
         </div>
