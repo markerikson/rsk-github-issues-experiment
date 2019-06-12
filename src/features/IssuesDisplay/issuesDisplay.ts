@@ -1,6 +1,15 @@
 import { createSlice, PayloadAction } from "redux-starter-kit";
 
-type CurrentDisplay = { type: "issues" | "comments"; issueId: number | null };
+type Overwrite<T1, T2> = { [P in Exclude<keyof T1, keyof T2>]: T1[P] } & T2;
+
+type CurrentDisplay = { displayType: "issues" | "comments"; issueId: number };
+
+type CurrentDisplayPayload = Overwrite<
+    CurrentDisplay,
+    {
+        issueId?: number;
+    }
+>;
 
 interface CurrentRepo {
     org: string;
@@ -16,11 +25,11 @@ let initialState: CurrentDisplayState = {
     org: "rails",
     repo: "rails",
     page: 1,
-    type: "issues",
-    issueId: null,
+    displayType: "issues",
+    issueId: 0,
 };
 
-type IST = (typeof initialState)["type"];
+type IST = (typeof initialState)["displayType"];
 
 const issuesDisplay = createSlice({
     slice: "issuesDisplay",
@@ -34,10 +43,14 @@ const issuesDisplay = createSlice({
         setCurrentPage(state, action: PayloadAction<number>) {
             state.page = action.payload;
         },
-        setCurrentDisplayType(state, action: PayloadAction<CurrentDisplay>) {
-            const { type, issueId } = action.payload;
-            state.type = type;
-            state.issueId = issueId;
+        setCurrentDisplayType(state, action: PayloadAction<CurrentDisplayPayload>) {
+            const { displayType, issueId } = action.payload;
+            state.displayType = displayType;
+            if (issueId !== undefined) {
+                state.issueId = issueId;
+            } else {
+                state.issueId = -1;
+            }
         },
     },
 });

@@ -1,48 +1,39 @@
-import React, { useState } from "react";
+import React from "react";
+import { useSelector, useDispatch } from "react-redux";
 import "./App.css";
 
 import { RepoSearchForm } from "./features/RepoSearch/RepoSearchForm";
 import { IssuesListPage } from "./features/IssuesList/IssuesListPage";
 import { IssueDetailsPage } from "./features/IssueDetails/IssueDetailsPage";
 
-const ORG = "rails";
-const REPO = "rails";
+import { displayRepo, setCurrentDisplayType, setCurrentPage } from "./features/IssuesDisplay/issuesDisplay";
 
-type CurrentDisplay =
-    | {
-          type: "issues";
-      }
-    | {
-          type: "comments";
-          issueId: number;
-      };
+import { RootState } from "./store";
 
 const App: React.FC = () => {
-    const [org, setOrg] = useState(ORG);
-    const [repo, setRepo] = useState(REPO);
-    const [page, setPage] = useState(1);
-    const [currentDisplay, setCurrentDisplay] = useState<CurrentDisplay>({ type: "issues" });
+    const dispatch = useDispatch();
+
+    const { org, repo, displayType, page, issueId } = useSelector((state: RootState) => state.issuesDisplay);
 
     const setOrgAndRepo = (org: string, repo: string) => {
-        setOrg(org);
-        setRepo(repo);
+        dispatch(displayRepo({ org, repo }));
     };
 
     const setJumpToPage = (page: number) => {
-        setPage(page);
+        dispatch(setCurrentPage(page));
     };
 
     const showIssuesList = () => {
-        setCurrentDisplay({ type: "issues" });
+        dispatch(setCurrentDisplayType({ displayType: "issues" }));
     };
 
     const showIssueComments = (issueId: number) => {
-        setCurrentDisplay({ type: "comments", issueId });
+        dispatch(setCurrentDisplayType({ displayType: "comments", issueId }));
     };
 
     let content;
 
-    if (currentDisplay.type === "issues") {
+    if (displayType === "issues") {
         content = (
             <React.Fragment>
                 <RepoSearchForm org={org} repo={repo} setOrgAndRepo={setOrgAndRepo} setJumpToPage={setJumpToPage} />
@@ -56,7 +47,6 @@ const App: React.FC = () => {
             </React.Fragment>
         );
     } else {
-        const { issueId } = currentDisplay;
         const key = `${org}/${repo}/${issueId}`;
         content = (
             <IssueDetailsPage key={key} org={org} repo={repo} issueId={issueId} showIssuesList={showIssuesList} />
