@@ -1,8 +1,8 @@
 import { Action, Dispatch, AnyAction } from "redux";
 
 declare module "react-redux" {
-    // the conditional type is to support TypeScript 3.0, which does not support mapping over tuples and arrays;
-    // once the typings are updated to at least TypeScript 3.1, a simple mapped type can replace this mess
+    // the conditional displayType is to support TypeScript 3.0, which does not support mapping over tuples and arrays;
+    // once the typings are updated to at least TypeScript 3.1, a simple mapped displayType can replace this mess
     export type ResolveArrayThunks<TDispatchProps extends ReadonlyArray<any>> = TDispatchProps extends [
         infer A1,
         infer A2,
@@ -94,7 +94,7 @@ declare module "react-redux" {
     /**
      * A hook to access the redux `dispatch` function.
      *
-     * Note for `redux-thunk` users: the return type of the returned `dispatch` functions for thunks is incorrect.
+     * Note for `redux-thunk` users: the return displayType of the returned `dispatch` functions for thunks is incorrect.
      * However, it is possible to get a correctly typed `dispatch` function by creating your own custom hook typed
      * from the store's dispatch function like this: `const useThunkDispatch = () => useDispatch<typeof store.dispatch>();`
      *
@@ -110,7 +110,7 @@ declare module "react-redux" {
      *   return (
      *     <div>
      *       <span>{value}</span>
-     *       <button onClick={() => dispatch({ type: 'increase-counter' })}>
+     *       <button onClick={() => dispatch({ displayType: 'increase-counter' })}>
      *         Increase counter
      *       </button>
      *     </div>
@@ -130,7 +130,7 @@ declare module "react-redux" {
      * that allows you to customize the way the selected state is compared to determine
      * whether the component needs to be re-rendered.
      *
-     * If you do not want to have to specify the root state type for whenever you use
+     * If you do not want to have to specify the root state displayType for whenever you use
      * this hook with an inline selector you can use the `TypedUseSelectorHook` interface
      * to create a version of this hook that is properly typed for your root state.
      *
