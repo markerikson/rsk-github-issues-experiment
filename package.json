@@ -10,7 +10,7 @@
     "@types/react": "16.8.18",
     "@types/react-dom": "16.8.4",
     "@types/react-paginate": "^6.2.1",
-    "@types/react-redux": "^7.0.9",
+    "@types/react-redux": "^7.1.0",
     "axios": "^0.18.0",
     "emotion": "^10.0.9",
     "parse-link-header": "^1.0.1",
